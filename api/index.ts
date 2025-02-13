@@ -4,16 +4,13 @@ import {
   InteractionType,
   verifyKey,
 } from "discord-interactions";
-
-const GET_SONG_COMMAND = {
-  name: "get-song",
-  description: "Get a song from the database",
-};
+import { GET_SONG_COMMAND } from "../src/commands";
 
 export default async function main(
   request: VercelRequest,
   response: VercelResponse,
 ) {
+  console.log("Request received: ", request.method, request.body);
   if (request.method === "POST") {
     try {
       const signature = request.headers["X-Signature-Ed25519"];
