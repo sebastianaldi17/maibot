@@ -51,7 +51,12 @@ export default async function main(
             });
             break;
           }
+          default: {
+            response.status(400).end("Unknown command");
+          }
         }
+      } else {
+        response.status(400).end("Not command or ping");
       }
     } catch (err) {
       console.error("Internal server error: ", err);
