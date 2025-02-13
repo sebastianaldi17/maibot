@@ -7,8 +7,7 @@
   "type": "commonjs",
   "main": "api/index.ts",
   "scripts": {
-    "build": "tsc",
-    "deploy-commands": "npm run build && cp .env dist/.env && node dist/registerCommands.js"
+    "deploy-commands": "tsc && cp .env dist/.env && node dist/registerCommands.js"
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",
