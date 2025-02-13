@@ -5,6 +5,7 @@ import {
   verifyKey,
 } from "discord-interactions";
 import { GET_SONG_COMMAND } from "../src/commands";
+import { InteractionResponse } from "../src/structs";
 
 export default async function main(
   request: VercelRequest,
@@ -13,7 +14,7 @@ export default async function main(
   if (request.method === "POST") {
     try {
       const signature = request.headers["x-signature-ed25519"];
-      const timestamp = request.headers["x-signature-timestamp"];  
+      const timestamp = request.headers["x-signature-timestamp"];
 
       const isValidRequest = await verifyKey(
         JSON.stringify(request.body),
@@ -28,26 +29,36 @@ export default async function main(
 
       const message = request.body;
       if (message.type === InteractionType.PING) {
-        response.send({
+        const pingResponse: InteractionResponse = {
           type: InteractionResponseType.PONG,
-        });
+        };
+        response.send(pingResponse);
       } else if (message.type === InteractionType.APPLICATION_COMMAND) {
         switch (message.data.name.toLowerCase()) {
           case GET_SONG_COMMAND.name.toLowerCase(): {
-            // response struct https://discord.com/developers/docs/interactions/receiving-and-responding#responding-to-an-interaction
-            response.status(200).send({
+            const titleSearch = message.data.options[0].value;
+
+            const commandResponse: InteractionResponse = {
               type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
               data: {
-                content: "Test",
+                content: `Search results for ${titleSearch}`,
                 embeds: [
                   {
-                    image: {
+                    title: "Song 1",
+                    thumbnail: {
                       url: "https://maimaidx.jp/maimai-mobile/img/Music/edbfefdce47e1f93.png",
+                    },
+                  },
+                  {
+                    title: "Song 2",
+                    thumbnail: {
+                      url: "https://maimaidx.jp/maimai-mobile/img/Music/f99ee802d1590feb.png",
                     },
                   },
                 ],
               },
-            });
+            };
+            response.status(200).send(commandResponse);
             break;
           }
           default: {
