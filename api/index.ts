@@ -4,8 +4,9 @@ import {
   InteractionType,
   verifyKey,
 } from "discord-interactions";
-import { GET_SONG_COMMAND } from "../src/commands";
-import { InteractionResponse } from "../src/structs";
+import { GET_SONG_COMMAND } from "../src/commands/getSong";
+import { InteractionResponse } from "../src/interfaces/interactionResponse";
+import { GetSongsResponse } from "../src/interfaces/songDetail";
 
 export default async function main(
   request: VercelRequest,
@@ -38,26 +39,45 @@ export default async function main(
           case GET_SONG_COMMAND.name.toLowerCase(): {
             const titleSearch = message.data.options[0].value;
 
+            const songsResponse = await fetch(
+              `${process.env.SONG_API_URL}/songs?title=${titleSearch}`,
+            );
+
+            if (!songsResponse.ok) {
+              response.status(500).end("Failed to fetch songs from songs API");
+              break;
+            }
+
+            const songsBody: GetSongsResponse = await songsResponse.json();
+            const songs = songsBody.songs;
+
+            if (songs.length === 0) {
+              const noSongsFoundResponse: InteractionResponse = {
+                type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+                data: {
+                  content: `No songs found for ${titleSearch}`,
+                },
+              };
+              response.status(200).send(noSongsFoundResponse);
+              break;
+            }
+
             const commandResponse: InteractionResponse = {
               type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
               data: {
                 content: `Search results for ${titleSearch}`,
-                embeds: [
-                  {
-                    title: "Song 1",
-                    description: "Song 1 description",
-                    image: {
-                      url: "https://i.imgur.com/dwWVJjS.jpeg",
-                    },
+                embeds: songs.map((song) => ({
+                  title: `${song.title} - ${song.artist}`,
+                  description: song.version,
+                  fields: song.difficulties.map((difficulty) => ({
+                    name: difficulty.difficulty,
+                    value: `Level: ${difficulty.level} (${difficulty.internalLevel})`,
+                  })),
+                  image: {
+                    url: song.cover,
                   },
-                  {
-                    title: "Song 2",
-                    description: "Song 2 description",
-                    image: {
-                      url: "https://maimaidx.jp/maimai-mobile/img/Music/f99ee802d1590feb.png",
-                    },
-                  },
-                ],
+                  url: `${process.env.WEBSITE_URL}/songs/${song._id}`,
+                })),
               },
             };
             response.status(200).send(commandResponse);
