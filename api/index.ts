@@ -27,6 +27,7 @@ export default async function main(
       );
 
       if (!isValidRequest) {
+        console.log("Bad request for ", JSON.stringify(request.body));
         return response.status(401).end("Bad request signature");
       }
 
