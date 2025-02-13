@@ -46,12 +46,16 @@ export default async function main(
                   {
                     title: "Song 1",
                     description: "Song 1 description",
-                    url: "https://maimaidx.jp/maimai-mobile/img/Music/edbfefdce47e1f93.png",
+                    image: {
+                      url: "https://maimaidx.jp/maimai-mobile/img/Music/edbfefdce47e1f93.png",
+                    },
                   },
                   {
                     title: "Song 2",
                     description: "Song 2 description",
-                    url: "https://maimaidx.jp/maimai-mobile/img/Music/f99ee802d1590feb.png",
+                    image: {
+                      url: "https://maimaidx.jp/maimai-mobile/img/Music/f99ee802d1590feb.png",
+                    },
                   },
                 ],
               },
