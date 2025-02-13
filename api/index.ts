@@ -47,7 +47,7 @@ export default async function main(
                     title: "Song 1",
                     description: "Song 1 description",
                     image: {
-                      url: "https://maimaidx.jp/maimai-mobile/img/Music/edbfefdce47e1f93.png",
+                      url: "https://i.imgur.com/dwWVJjS.jpeg",
                     },
                   },
                   {
