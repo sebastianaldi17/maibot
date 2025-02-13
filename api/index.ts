@@ -16,6 +16,10 @@ export default async function main(
       const signature = request.headers["X-Signature-Ed25519"];
       const timestamp = request.headers["X-Signature-Timestamp"];
 
+      console.log(signature);
+      console.log(timestamp);
+      console.log(process.env.PUBLIC_KEY);
+
       const isValidRequest = await verifyKey(
         JSON.stringify(request.body),
         signature as string,
