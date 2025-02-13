@@ -10,16 +10,10 @@ export default async function main(
   request: VercelRequest,
   response: VercelResponse,
 ) {
-  console.log(
-    "Request received: ",
-    request.method,
-    request.body,
-    request.headers,
-  );
   if (request.method === "POST") {
     try {
-      const signature = request.headers["X-Signature-Ed25519"];
-      const timestamp = request.headers["X-Signature-Timestamp"];
+      const signature = request.headers["x-signature-ed25519"];
+      const timestamp = request.headers["x-signature-timestamp"];  
 
       const isValidRequest = await verifyKey(
         JSON.stringify(request.body),
@@ -29,7 +23,6 @@ export default async function main(
       );
 
       if (!isValidRequest) {
-        console.log("Invalid request signature");
         return response.status(401).end("Bad request signature");
       }
 
@@ -58,12 +51,10 @@ export default async function main(
             break;
           }
           default: {
-            console.log("Unknown command");
             response.status(400).end("Unknown command");
           }
         }
       } else {
-        console.log("Unknown interaction type");
         response.status(400).end("Not command or ping");
       }
     } catch (err) {
