@@ -1,3 +1,4 @@
+// Sourced from https://github.com/sebastianaldi17/maisocial/blob/main/api/src/interfaces/song.interface.ts
 export interface Song {
   artist: string;
   title: string;

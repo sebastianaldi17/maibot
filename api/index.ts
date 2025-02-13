@@ -68,7 +68,7 @@ export default async function main(
                 content: `Search results for ${titleSearch}`,
                 embeds: songs.map((song) => ({
                   title: `${song.title} - ${song.artist}`,
-                  description: song.version,
+                  description: `Version: ${song.version}\nCategory: ${song.category}`,
                   fields: song.difficulties.map((difficulty) => ({
                     name: difficulty.difficulty,
                     value: `Level: ${difficulty.level} (${difficulty.internalLevel})`,
@@ -76,7 +76,7 @@ export default async function main(
                   image: {
                     url: song.cover,
                   },
-                  url: `${process.env.WEBSITE_URL}/songs/${song._id}`,
+                  url: `${process.env.WEBSITE_URL}/${song._id}`,
                 })),
               },
             };
