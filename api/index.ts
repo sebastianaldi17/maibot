@@ -10,7 +10,10 @@ const GET_SONG_COMMAND = {
   description: "Get a song from the database",
 };
 
-export async function main(request: VercelRequest, response: VercelResponse) {
+export default async function main(
+  request: VercelRequest,
+  response: VercelResponse,
+) {
   if (request.method === "POST") {
     try {
       const signature = request.headers["X-Signature-Ed25519"];
@@ -57,5 +60,7 @@ export async function main(request: VercelRequest, response: VercelResponse) {
       console.error("Internal server error: ", err);
       response.status(500).send({ error: "Internal Server Error" });
     }
+  } else {
+    response.status(405).end("Method Not Allowed");
   }
 }
