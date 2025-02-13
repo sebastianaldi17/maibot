@@ -24,6 +24,7 @@ export default async function main(
       );
 
       if (!isValidRequest) {
+        console.log("Invalid request signature");
         return response.status(401).end("Bad request signature");
       }
 
@@ -52,10 +53,12 @@ export default async function main(
             break;
           }
           default: {
+            console.log("Unknown command");
             response.status(400).end("Unknown command");
           }
         }
       } else {
+        console.log("Unknown interaction type");
         response.status(400).end("Not command or ping");
       }
     } catch (err) {
