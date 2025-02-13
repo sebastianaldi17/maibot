@@ -10,15 +10,16 @@ export default async function main(
   request: VercelRequest,
   response: VercelResponse,
 ) {
-  console.log("Request received: ", request.method, request.body);
+  console.log(
+    "Request received: ",
+    request.method,
+    request.body,
+    request.headers,
+  );
   if (request.method === "POST") {
     try {
       const signature = request.headers["X-Signature-Ed25519"];
       const timestamp = request.headers["X-Signature-Timestamp"];
-
-      console.log(signature);
-      console.log(timestamp);
-      console.log(process.env.PUBLIC_KEY);
 
       const isValidRequest = await verifyKey(
         JSON.stringify(request.body),
