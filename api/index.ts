@@ -45,15 +45,13 @@ export default async function main(
                 embeds: [
                   {
                     title: "Song 1",
-                    thumbnail: {
-                      url: "https://maimaidx.jp/maimai-mobile/img/Music/edbfefdce47e1f93.png",
-                    },
+                    description: "Song 1 description",
+                    url: "https://maimaidx.jp/maimai-mobile/img/Music/edbfefdce47e1f93.png",
                   },
                   {
                     title: "Song 2",
-                    thumbnail: {
-                      url: "https://maimaidx.jp/maimai-mobile/img/Music/f99ee802d1590feb.png",
-                    },
+                    description: "Song 2 description",
+                    url: "https://maimaidx.jp/maimai-mobile/img/Music/f99ee802d1590feb.png",
                   },
                 ],
               },

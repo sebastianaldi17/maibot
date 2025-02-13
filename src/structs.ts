@@ -1,3 +1,4 @@
+// Sourced from https://discord.com/developers/docs/interactions/receiving-and-responding
 import {
   InteractionResponseFlags,
   InteractionResponseType,

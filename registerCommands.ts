@@ -1,13 +1,8 @@
 import * as dotenv from "dotenv";
+import { GET_SONG_COMMAND } from "./src/commands";
 
 const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
 const DISCORD_APPLICATION_ID = process.env.DISCORD_APPLICATION_ID;
-
-const command = {
-  name: "get-song",
-  description: "Get a song from the database",
-  options: [],
-};
 
 const headers = {
   "Content-Type": "application/json",
@@ -21,7 +16,7 @@ dotenv.config();
 fetch(url, {
   method: "POST",
   headers: headers,
-  body: JSON.stringify(command),
+  body: JSON.stringify(GET_SONG_COMMAND),
 })
   .then((response) => response.json())
   .then((data) => {
