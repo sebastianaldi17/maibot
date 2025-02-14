@@ -6,7 +6,10 @@ import {
   verifyKey,
 } from "discord-interactions";
 import { GET_SONG_COMMAND } from "../src/commands/getSong";
-import { InteractionResponse } from "../src/interfaces/interactionResponse";
+import {
+  Embed,
+  InteractionResponse,
+} from "../src/interfaces/interactionResponse";
 import { GetSongsResponse } from "../src/interfaces/songDetail";
 import { GET_RANDOM_SONGS_COMMAND } from "../src/commands/getRandomSongs";
 import { Chart } from "../src/interfaces/chartDetail";
@@ -138,43 +141,33 @@ export default async function main(
 
             const shuffledCharts = shuffleArray(charts);
 
+            const embeds: Embed[] = [];
+            let embedText = "";
+            for (let i = 0; i < shuffledCharts.length; i++) {
+              const chart = shuffledCharts[i];
+              embedText += `${i + 1}. ${chart.title} - ${chart.artist} ${chart.difficulty} ${chart.level} (${chart.internalLevel})\n`;
+            }
+
+            embeds.push({
+              title: `Random ${minLevel} - ${maxLevel} x${songCount}`,
+              description: embedText,
+              url: `${process.env.WEBSITE_URL}`,
+            });
+
+            for (const chart of shuffledCharts) {
+              embeds.push({
+                image: {
+                  url: chart.cover,
+                },
+                url: `${process.env.WEBSITE_URL}`,
+              });
+            }
+
             const commandResponse: InteractionResponse = {
               type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
               data: {
                 content: `Random ${minLevel} - ${maxLevel} x${songCount}`,
-                embeds: shuffledCharts.map((chart) => ({
-                  title: `${chart.title} - ${chart.artist}`,
-                  fields: [
-                    {
-                      name: "Version",
-                      value: chart.version,
-                      inline: true,
-                    },
-                    {
-                      name: "Category",
-                      value: chart.category,
-                      inline: true,
-                    },
-                    {
-                      name: "Difficulty",
-                      value: chart.difficulty,
-                      inline: true,
-                    },
-                    {
-                      name: "Level",
-                      value: chart.level,
-                      inline: true,
-                    },
-                    {
-                      name: "Constant",
-                      value: chart.internalLevel.toFixed(1),
-                      inline: true,
-                    },
-                  ],
-                  image: {
-                    url: chart.cover,
-                  },
-                })),
+                embeds: embeds,
               },
             };
             response.status(200).send(commandResponse);
