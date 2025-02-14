@@ -14,28 +14,39 @@ const headers = {
 
 const url = `https://discord.com/api/v10/applications/${DISCORD_APPLICATION_ID}/commands`;
 
-fetch(url, {
-  method: "POST",
-  headers: headers,
-  body: JSON.stringify(GET_SONG_COMMAND),
-})
-  .then((response) => response.json())
-  .then((data) => {
-    console.log("Get songs registered successfully:", data);
-  })
-  .catch((error) => {
-    console.error("Error registering get songs command:", error);
-  });
+async function registerCommands() {
+  try {
+    console.log("Registering get songs command...");
+    const registerGetSongsResponse = await fetch(url, {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify(GET_SONG_COMMAND),
+    });
 
-fetch(url, {
-  method: "POST",
-  headers: headers,
-  body: JSON.stringify(GET_RANDOM_SONGS_COMMAND),
-})
-  .then((response) => response.json())
-  .then((data) => {
-    console.log("Get random songs registered successfully:", data);
-  })
-  .catch((error) => {
-    console.error("Error registering get random songs command:", error);
-  });
+    if (registerGetSongsResponse.ok) {
+      const registerGetSongsResponseJson =
+        await registerGetSongsResponse.json();
+      console.log(registerGetSongsResponseJson);
+    }
+
+    console.log("Registering get random songs command...");
+
+    const registerGetRandomSongsResponse = await fetch(url, {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify(GET_RANDOM_SONGS_COMMAND),
+    });
+
+    if (registerGetRandomSongsResponse.ok) {
+      const registerGetRandomSongsResponseJson =
+        await registerGetRandomSongsResponse.json();
+      console.log(registerGetRandomSongsResponseJson);
+    }
+  } catch (error) {
+    console.error(error);
+  } finally {
+    process.exit();
+  }
+}
+
+registerCommands();

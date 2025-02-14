@@ -27,7 +27,12 @@ export default async function main(
       );
 
       if (!isValidRequest) {
-        console.log("Bad request for ", JSON.stringify(request.body));
+        console.log("Bad request");
+        console.log(JSON.stringify(request.body));
+        console.log(request.headers);
+        console.log(signature);
+        console.log(timestamp);
+        console.log(process.env.PUBLIC_KEY);
         return response.status(401).end("Bad request signature");
       }
 
