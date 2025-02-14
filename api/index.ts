@@ -9,6 +9,7 @@ import { InteractionResponse } from "../src/interfaces/interactionResponse";
 import { GetSongsResponse } from "../src/interfaces/songDetail";
 import { GET_RANDOM_SONGS_COMMAND } from "../src/commands/getRandomSongs";
 import { Chart } from "../src/interfaces/chartDetail";
+import getRawBody from "raw-body";
 
 export default async function main(
   request: VercelRequest,
@@ -19,8 +20,10 @@ export default async function main(
       const signature = request.headers["x-signature-ed25519"];
       const timestamp = request.headers["x-signature-timestamp"];
 
+      const requestBody = await getRawBody(request);
+
       const isValidRequest = await verifyKey(
-        JSON.stringify(request.body),
+        requestBody,
         signature as string,
         timestamp as string,
         process.env.PUBLIC_KEY || "",
@@ -28,11 +31,6 @@ export default async function main(
 
       if (!isValidRequest) {
         console.log("Bad request");
-        console.log(JSON.stringify(request.body));
-        console.log(request.headers);
-        console.log(signature);
-        console.log(timestamp);
-        console.log(process.env.PUBLIC_KEY);
         return response.status(401).end("Bad request signature");
       }
 
