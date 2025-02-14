@@ -8,6 +8,7 @@ import {
 import { GET_SONG_COMMAND } from "../src/commands/getSong";
 import {
   Embed,
+  EmbedField,
   InteractionResponse,
 } from "../src/interfaces/interactionResponse";
 import { GetSongsResponse } from "../src/interfaces/songDetail";
@@ -142,26 +143,20 @@ export default async function main(
             const shuffledCharts = shuffleArray(charts);
 
             const embeds: Embed[] = [];
-            let embedText = "";
+            const fields: EmbedField[] = [];
             for (let i = 0; i < shuffledCharts.length; i++) {
               const chart = shuffledCharts[i];
-              embedText += `${i + 1}. ${chart.title} - ${chart.artist} ${chart.difficulty} ${chart.level} (${chart.internalLevel})\n`;
+              fields.push({
+                name: `Track ${i + 1}`,
+                value: `${chart.title} - ${chart.artist}\nDifficulty: ${chart.difficulty} (${chart.level})`,
+                inline: true,
+              });
             }
 
             embeds.push({
               title: `Random ${minLevel} - ${maxLevel} x${songCount}`,
-              description: embedText,
-              url: `${process.env.WEBSITE_URL}`,
+              fields: fields,
             });
-
-            for (const chart of shuffledCharts) {
-              embeds.push({
-                image: {
-                  url: chart.cover,
-                },
-                url: `${process.env.WEBSITE_URL}`,
-              });
-            }
 
             const commandResponse: InteractionResponse = {
               type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,

@@ -52,9 +52,11 @@ export interface Embed {
     icon_url?: string;
     proxy_icon_url?: string;
   };
-  fields?: {
-    name: string;
-    value: string;
-    inline?: boolean;
-  }[];
+  fields?: EmbedField[];
+}
+
+export interface EmbedField {
+  name: string;
+  value: string;
+  inline?: boolean;
 }
