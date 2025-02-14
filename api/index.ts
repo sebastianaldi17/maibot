@@ -1,5 +1,6 @@
 import { VercelRequest, VercelResponse } from "@vercel/node";
 import {
+  InteractionResponseFlags,
   InteractionResponseType,
   InteractionType,
   verifyKey,
@@ -10,6 +11,7 @@ import { GetSongsResponse } from "../src/interfaces/songDetail";
 import { GET_RANDOM_SONGS_COMMAND } from "../src/commands/getRandomSongs";
 import { Chart } from "../src/interfaces/chartDetail";
 import getRawBody from "raw-body";
+import { shuffleArray } from "../src/utils";
 
 export default async function main(
   request: VercelRequest,
@@ -94,11 +96,30 @@ export default async function main(
             const maxLevel: number = message.data.options[1].value;
             const songCount: number = message.data.options[2].value;
 
+            if (songCount <= 0 || songCount > 4) {
+              const invalidSongCountResponse: InteractionResponse = {
+                type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+                data: {
+                  content: `Invalid song count. Must be between 1 and 4`,
+                  flags: InteractionResponseFlags.EPHEMERAL,
+                },
+              };
+              response.status(200).send(invalidSongCountResponse);
+              break;
+            }
+
             const songsResponse = await fetch(
               `${process.env.SONG_API_URL}/songs/random?minLevel=${minLevel}&maxLevel=${maxLevel}&songCount=${songCount}`,
             );
             if (!songsResponse.ok) {
-              response.status(500).end("Failed to fetch songs from songs API");
+              const internalServerErrorResponse: InteractionResponse = {
+                type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+                data: {
+                  content: `Failed to fetch songs from songs API`,
+                  flags: InteractionResponseFlags.EPHEMERAL,
+                },
+              };
+              response.status(200).send(internalServerErrorResponse);
               break;
             }
 
@@ -115,31 +136,44 @@ export default async function main(
               break;
             }
 
+            const shuffledCharts = shuffleArray(charts);
+
             const commandResponse: InteractionResponse = {
               type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
               data: {
                 content: `Random ${minLevel} - ${maxLevel} x${songCount}`,
-                embeds: charts.map((chart) => ({
+                embeds: shuffledCharts.map((chart) => ({
                   title: `${chart.title} - ${chart.artist}`,
-                  description: `Version: ${chart.version}\nCategory: ${chart.category}`,
                   fields: [
+                    {
+                      name: "Version",
+                      value: chart.version,
+                      inline: true,
+                    },
+                    {
+                      name: "Category",
+                      value: chart.category,
+                      inline: true,
+                    },
                     {
                       name: "Difficulty",
                       value: chart.difficulty,
+                      inline: true,
                     },
                     {
                       name: "Level",
                       value: chart.level,
+                      inline: true,
                     },
                     {
                       name: "Constant",
-                      value: chart.internalLevel.toString(),
+                      value: chart.internalLevel.toFixed(1),
+                      inline: true,
                     },
                   ],
                   image: {
                     url: chart.cover,
                   },
-                  url: `${process.env.WEBSITE_URL}/${chart.songId}`,
                 })),
               },
             };
