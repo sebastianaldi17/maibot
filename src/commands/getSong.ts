@@ -8,5 +8,11 @@ export const GET_SONG_COMMAND = {
       type: 3,
       required: true,
     },
+    {
+      name: "fuzzy",
+      description: "Fuzzy search",
+      type: 5,
+      required: false,
+    },
   ],
 };

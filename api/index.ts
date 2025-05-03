@@ -52,7 +52,7 @@ export default async function main(
             const titleSearch = message.data.options[0].value;
 
             const songsResponse = await fetch(
-              `${process.env.SONG_API_URL}/songs?title=${titleSearch}`,
+              `${process.env.SONG_API_URL}/songs?title=${titleSearch}?fuzzy=${message.data.options[1] && message.data.options[1].value}`,
             );
 
             if (!songsResponse.ok) {
