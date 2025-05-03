@@ -51,11 +51,12 @@ export default async function main(
           case GET_SONG_COMMAND.name.toLowerCase(): {
             const titleSearch = message.data.options[0].value;
 
+            const fuzzySearch = message.data.options?.[1]?.value ?? false;
+            const url = `${process.env.SONG_API_URL}/songs?title=${titleSearch}?fuzzy=${fuzzySearch}`;
             console.log(message.data.options);
+            console.log("URL: ", url);
 
-            const songsResponse = await fetch(
-              `${process.env.SONG_API_URL}/songs?title=${titleSearch}?fuzzy=${message.data.options[1] && message.data.options[1].value}`,
-            );
+            const songsResponse = await fetch(url);
 
             if (!songsResponse.ok) {
               response.status(500).end("Failed to fetch songs from songs API");
