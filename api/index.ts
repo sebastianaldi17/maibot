@@ -51,6 +51,8 @@ export default async function main(
           case GET_SONG_COMMAND.name.toLowerCase(): {
             const titleSearch = message.data.options[0].value;
 
+            console.log(message.data.options);
+
             const songsResponse = await fetch(
               `${process.env.SONG_API_URL}/songs?title=${titleSearch}?fuzzy=${message.data.options[1] && message.data.options[1].value}`,
             );
