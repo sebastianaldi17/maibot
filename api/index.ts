@@ -52,7 +52,7 @@ export default async function main(
             const titleSearch = message.data.options[0].value;
 
             const fuzzySearch = message.data.options?.[1]?.value ?? false;
-            const url = `${process.env.SONG_API_URL}/songs?title=${titleSearch}?fuzzy=${fuzzySearch}`;
+            const url = `${process.env.SONG_API_URL}/songs?title=${titleSearch}&fuzzy=${fuzzySearch}`;
             console.log(message.data.options);
             console.log("URL: ", url);
 
